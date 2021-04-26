@@ -14,4 +14,4 @@ function getUrlQueryParams(str) {
 
 module.exports = {
     getUrlQueryParams
-}
+};
