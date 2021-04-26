@@ -1,0 +1,18 @@
+{
+  "name": "googlesheets-proxy",
+  "version": "1.0.0",
+  "description": "Simple google sheets proxy to download a file and then send it to the client with the proper headers",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.heroku.com/googlesheets-proxy.git"
+  },
+  "author": "Siddharth Singh",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
