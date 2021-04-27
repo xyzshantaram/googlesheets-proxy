@@ -38,8 +38,9 @@ app.get('/dl', (req, res) => {
                     "text": body
                 });
             } else {
+                res.status = 500;
                 res.send({
-                    "status": "DownloadFailed",
+                    "status": `DownloadFailed, response code: ${resp}, err: ${err}, body:\n${body}`,
                     "text": null
                 });
             }
