@@ -40,7 +40,7 @@ app.get('/dl', (req, res) => {
             } else {
                 res.status = 500;
                 res.send({
-                    "status": `DownloadFailed, response code: ${resp}, err: ${err}, body:\n${body}`,
+                    "status": `DownloadFailed, response code: ${resp.statusCode}, err: ${resp.statusMessage}, body:\n${body}`,
                     "text": null
                 });
             }
