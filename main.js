@@ -1,6 +1,9 @@
-const express = require('express')
-const utils = require('./utils')
+const express = require('express');
+const utils = require('./utils');
 const request = require('request');
+const tsvRoot = require('tsv')
+const csv = tsvRoot.CSV;
+const tsv = tsvRoot.TSV;
 
 const app = express()
 const port = process.env.PORT || 3000;
@@ -24,18 +27,19 @@ app.get('/dl', (req, res) => {
         res.send("bad request: no arguments supplied");
         return;
     }
-    if ("id" in queryParams && "sheetName" in queryParams && "format" in queryParams) {
+    if ("id" in queryParams && "sheetName" in queryParams) {
         res.status = 200;
         let id = queryParams.id;
-        let dlFormat = encodeURI(queryParams.format || "tsv");
         let encodedSheetName = encodeURI(queryParams.sheetName);
-        let getUrl = `https://docs.google.com/spreadsheets/d/${id}/export?gid=0&format=${dlFormat}&sheet=${encodedSheetName}`;
+        let getUrl = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${encodedSheetName}`
         request.get(getUrl, function(err, resp, body) {
             if (!err && resp.statusCode == 200) {
                 let data = body;
+                let parsed = csv.parse(body);
+                let tsvString = tsv.stringify(parsed);
                 res.send({
                     "status": "OK",
-                    "text": body
+                    "text": tsvString
                 });
             } else {
                 res.status = 500;
@@ -44,7 +48,7 @@ app.get('/dl', (req, res) => {
                     "text": body,
                     "responseCode": resp.statusCode,
                     "message": resp.statusMessage,
-
+                    "reqUrl": getUrl
                 });
             }
         });
@@ -56,15 +60,12 @@ app.get('/dl', (req, res) => {
         if (!("sheetName") in queryParams) {
             list.push("sheetName");
         }
-        if (!("format") in queryParams) {
-            list.push("format");
-        }
         res.status = 400;
         res.send({
             status: "QueryStringMissingParams",
             text: body,
             missing: list.toString(),
-
+            reqUrl: getUrl
         });
         return;
     }
