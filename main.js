@@ -40,8 +40,11 @@ app.get('/dl', (req, res) => {
             } else {
                 res.status = 500;
                 res.send({
-                    "status": `DownloadFailed, response code: ${resp.statusCode}, err: ${resp.statusMessage}, body:\n${body}`,
-                    "text": null
+                    "status": `DownloadFailed`,
+                    "text": body,
+                    "responseCode": resp.statusCode,
+                    "message": resp.statusMessage,
+
                 });
             }
         });
@@ -59,8 +62,8 @@ app.get('/dl', (req, res) => {
         res.status = 400;
         res.send({
             status: "QueryStringMissingParams",
-            text: null,
-            missing: list.toString()
+            text: body,
+            missing: list.toString(),
 
         });
         return;
