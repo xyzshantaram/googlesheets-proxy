@@ -30,8 +30,8 @@ app.get('/dl', (req, res) => {
     if ("id" in queryParams && "sheetName" in queryParams) {
         res.status = 200;
         let id = queryParams.id;
-        let encodedSheetName = encodeURI(queryParams.sheetName);
-        let getUrl = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${encodedSheetName}`
+        let sheetName = queryParams.sheetName;
+        let getUrl = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${sheetName}`
         request.get(getUrl, function(err, resp, body) {
             if (!err && resp.statusCode == 200) {
                 let data = body;
@@ -39,7 +39,8 @@ app.get('/dl', (req, res) => {
                 let tsvString = tsv.stringify(parsed);
                 res.send({
                     "status": "OK",
-                    "text": tsvString
+                    "text": tsvString,
+                    "raw": body
                 });
             } else {
                 res.status = 500;
