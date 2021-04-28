@@ -40,7 +40,6 @@ app.get('/dl', (req, res) => {
                 res.send({
                     "status": "OK",
                     "text": tsvString,
-                    "raw": body
                 });
             } else {
                 res.status = 500;
@@ -64,7 +63,6 @@ app.get('/dl', (req, res) => {
         res.status = 400;
         res.send({
             status: "QueryStringMissingParams",
-            text: body,
             missing: list.toString(),
             reqUrl: getUrl
         });
