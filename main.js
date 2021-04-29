@@ -1,9 +1,7 @@
 const express = require('express');
 const utils = require('./utils');
 const request = require('request');
-const tsvRoot = require('tsv')
-const csv = tsvRoot.CSV;
-const tsv = tsvRoot.TSV;
+const Papa = require('papaparse');
 
 const app = express()
 const port = process.env.PORT || 3000;
@@ -31,8 +29,14 @@ app.get('/dl', (req, res) => {
         request.get(getUrl, function(err, resp, body) {
             if (!err && resp.statusCode == 200) {
                 let data = body;
-                let parsed = csv.parse(body);
-                let tsvString = tsv.stringify(parsed);
+                let parsed = Papa.parse(body, {
+                    header: true
+                }).data;
+                let tsvString = Papa.unparse(parsed, {
+                    delimiter: "\t",
+                    quotes: false,
+                    header: true
+                });
                 res.send({
                     "status": "OK",
                     "text": tsvString,
