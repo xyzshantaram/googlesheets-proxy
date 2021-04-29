@@ -28,18 +28,9 @@ app.get('/dl', (req, res) => {
         let getUrl = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${sheetName}`
         request.get(getUrl, function(err, resp, body) {
             if (!err && resp.statusCode == 200) {
-                let data = body;
-                let parsed = Papa.parse(body, {
-                    header: true
-                }).data;
-                let tsvString = Papa.unparse(parsed, {
-                    delimiter: "\t",
-                    quotes: false,
-                    header: true
-                });
                 res.send({
                     "status": "OK",
-                    "text": tsvString,
+                    "text": body,
                 });
             } else {
                 res.status = 500;
