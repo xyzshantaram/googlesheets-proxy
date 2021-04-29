@@ -25,7 +25,8 @@ app.get('/dl', (req, res) => {
         res.status = 200;
         let id = queryParams.id;
         let sheetName = queryParams.sheetName;
-        let getUrl = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${sheetName}`
+        let getUrl = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&headers=0&sheet=${sheetName}`;
+        console.log(getUrl);
         request.get(getUrl, function(err, resp, body) {
             if (!err && resp.statusCode == 200) {
                 res.send({
