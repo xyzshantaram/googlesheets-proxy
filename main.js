@@ -1,7 +1,6 @@
 const express = require('express');
 const utils = require('./utils');
 const request = require('request');
-const Papa = require('papaparse');
 
 const app = express()
 const port = process.env.PORT || 3000;
@@ -25,7 +24,7 @@ app.get('/dl', (req, res) => {
         res.status = 200;
         let id = queryParams.id;
         let sheetName = queryParams.sheetName;
-        let getUrl = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&headers=0&sheet=${sheetName}`;
+        let getUrl = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&headers=1&sheet=${sheetName}`;
         console.log(getUrl);
         request.get(getUrl, function(err, resp, body) {
             if (!err && resp.statusCode == 200) {

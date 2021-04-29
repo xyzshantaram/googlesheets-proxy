@@ -16,7 +16,6 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "papaparse": "^5.3.0",
     "request": "^2.88.2",
     "tsv": "^0.2.0"
   }
