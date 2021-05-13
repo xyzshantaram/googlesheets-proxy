@@ -5,6 +5,25 @@ const request = require('request');
 const app = express()
 const port = process.env.PORT || 3000;
 
+class Performance {
+    constructor(name) {
+        this.startTime = performance.now();
+        this.name = name;
+    }
+
+    getElapsed() {
+        return performance.now() - this.startTime;
+    }
+
+    log() {
+        let name = this.name;
+        let task = ((str) => {
+            return str ? `Task '${str}'` : `Task`
+        })(name);
+        console.log(`${task} took ${this.getElapsed()}ms to complete`);
+    };
+}
+
 app.use(express.static("public"))
 
 app.use(function(req, res, next) {
@@ -26,11 +45,13 @@ app.get('/dl', (req, res) => {
         let sheetName = queryParams.sheetName;
         let getUrl = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&headers=1&sheet=${sheetName}`;
         console.log(getUrl);
+        let p = new Performance();
         request.get(getUrl, function(err, resp, body) {
             if (!err && resp.statusCode == 200) {
                 res.send({
                     "status": "OK",
                     "text": body,
+                    "time": p.getElapsed()
                 });
             } else {
                 res.status = 500;
