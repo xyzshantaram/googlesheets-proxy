@@ -1,3 +1,4 @@
+const compression = require('compression');
 const express = require('express');
 const utils = require('./utils');
 const request = require('request');
@@ -27,11 +28,31 @@ class Performance {
     };
 }
 
+const shouldCompress = (req, res) => {
+    if (req.headers['x-no-compression']) {
+        // don't compress responses if this request header is present
+        return false;
+    }
+    // fallback to standard compression
+    return compression.filter(req, res);
+};
+
+app.use(compression({
+    // filter decides if the response should be compressed or not,
+    // based on the `shouldCompress` function above
+    filter: shouldCompress,
+    // threshold is the byte threshold for the response body size
+    // before compression is considered, the default is 1kb
+    threshold: 0
+}));
+
 app.use(express.static("public"))
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Cache-Control", "public");
+    res.header("Expires", new Date(new Date() + 9e5).toUTCString());
     next();
 })
 
