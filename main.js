@@ -9,17 +9,6 @@ const port = process.env.GSPROXY_PORT || 3000;
 // Load API keys from environment variable
 const API_KEYS = (process.env.GSPROXY_API_KEYS || "").split(",");
 
-// Middleware for API key validation
-app.use((req, res, next) => {
-    const apiKey = req.headers['authorization'];
-
-    if (!apiKey || !API_KEYS.includes(apiKey)) {
-        return res.status(403).json({ status: "Unauthorized", message: "Invalid or missing API key" });
-    }
-
-    next();
-});
-
 app.use(express.static("public"));
 
 app.use((req, res, next) => {
@@ -28,7 +17,17 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/dl', (req, res) => {
+const apiKeyMiddleware = (req, res, next) => {
+    const apiKey = req.headers['authorization'];
+
+    if (!apiKey || !API_KEYS.includes(apiKey)) {
+        return res.status(403).json({ status: "Unauthorized", message: "Invalid or missing API key" });
+    }
+
+    next();
+}
+
+app.get('/dl', apiKeyMiddleware, (req, res) => {
     let queryParams = utils.getUrlQueryParams(req.url);
     if (!queryParams) {
         return res.status(400).send("bad request: no arguments supplied");
